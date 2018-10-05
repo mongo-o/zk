@@ -20,6 +20,7 @@ public class RedisConfig implements Serializable {
      * add
      * update
      * delete
+     * stop:停止当前自动配置程序
      */
     private String type;
 

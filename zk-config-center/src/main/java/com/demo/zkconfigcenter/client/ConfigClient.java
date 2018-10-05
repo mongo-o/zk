@@ -11,6 +11,8 @@ import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * @author AYL    2018/10/5 11:48
  */
@@ -30,7 +32,7 @@ public class ConfigClient {
     @Autowired
     CuratorFramework client;
 
-    public void autoConfig() throws Exception {
+    public void autoConfig(CountDownLatch countDownLatch) throws Exception {
         if (client.checkExists().forPath(PATH + SUB_PATH) == null) {
             client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(PATH + SUB_PATH);
         }
@@ -53,6 +55,10 @@ public class ConfigClient {
                                 break;
                             case "delete":
                                 System.out.println("delete");
+                                break;
+                            case "stop":
+                                //事与愿违，这里并不会唤醒main线程。方法失败。
+                                countDownLatch.countDown();
                                 break;
                             default:
                                 System.out.println("redisconfig invalid value for type,should be in (add,updte,delete)");
