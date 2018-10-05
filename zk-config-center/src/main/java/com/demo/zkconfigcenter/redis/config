@@ -1,0 +1,3 @@
+{"type":"add","url":"ftp:text.redisconfig.xml","remark":"add"}
+{"type":"update","url":"ftp:text.redisconfigUpdate.xml","remark":"update"}
+{"type":"delete","url":"","remark":"delete"}
