@@ -26,7 +26,9 @@ public class PathChildrenCache_Sample {
         childrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
 
 
-
+        /**
+         *异步初始化的时候，这里获取不到子节点的值
+         */
         List<ChildData> childDataList = childrenCache.getCurrentData();
         for (ChildData cd : childDataList) {
             String cdData = new String(cd.getData());
