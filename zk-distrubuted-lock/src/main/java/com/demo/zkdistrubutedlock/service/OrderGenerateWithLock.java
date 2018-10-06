@@ -30,7 +30,7 @@ public class OrderGenerateWithLock {
                         exclusiveLock.acquire();
                         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss|SSS");
                         String orderNo = sdf.format(new Date());
-                        LogUtil.print("XLock生产的订单号是：" + orderNo);
+                        System.out.println("XLock生产的订单号是：" + orderNo);
                         exclusiveLock.release();
                     }
             ).start();

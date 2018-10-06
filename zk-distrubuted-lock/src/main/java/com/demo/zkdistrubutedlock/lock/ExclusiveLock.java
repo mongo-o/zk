@@ -28,7 +28,6 @@ public class ExclusiveLock {
      */
     private static final String PATH = "/lock";
     private static final String SUB_PATH = "/xlock";
-    private static CountDownLatch latch = new CountDownLatch(1);
 
     @PostConstruct
     public void init() throws Exception {
@@ -38,12 +37,13 @@ public class ExclusiveLock {
                     .withACL(ZooDefs.Ids.OPEN_ACL_UNSAFE)
                     .forPath(PATH);
         }
-        addLockWatcher();
     }
 
     public void acquire() {
-        while(true) {
+        boolean isDone = false;
+        while(!isDone) {
             try {
+                isDone = true;
                 client.create().withMode(CreateMode.EPHEMERAL)
                         .withACL(ZooDefs.Ids.OPEN_ACL_UNSAFE)
                         .forPath(PATH + SUB_PATH);
@@ -51,14 +51,7 @@ public class ExclusiveLock {
                 return;
             } catch (Exception e) {
                 LogUtil.print("获取XLock失败。");
-                try {
-                    if (latch.getCount() <= 0) {
-                        latch = new CountDownLatch(1);
-                    }
-                    latch.await();
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
+                isDone = false;
             }
         }
     }
@@ -67,7 +60,6 @@ public class ExclusiveLock {
         LogUtil.print("开始释放XLock");
         try {
             client.delete().forPath(PATH + SUB_PATH);
-            latch.countDown();
             LogUtil.print("释放XLock成功");
             return true;
         } catch (Exception e) {
@@ -92,7 +84,7 @@ public class ExclusiveLock {
                     if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_REMOVED)) {
                         LogUtil.print("子节点" + event.getData().getPath() + "被删除");
 
-                        latch.countDown();
+//                        latch.countDown();
                         LogUtil.print("latch.countDown()成功");
 
                     }
