@@ -2,6 +2,8 @@ package com.demo.zkconfigcenter.client;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.demo.ftp.FtpConfig;
+import com.demo.ftp.FtpUtil;
 import com.demo.zkconfigcenter.redis.RedisConfig;
 import jdk.nashorn.internal.parser.JSONParser;
 import org.apache.curator.framework.CuratorFramework;
@@ -48,7 +50,8 @@ public class ConfigClient {
                         RedisConfig redisConfig = JSON.parseObject(config, RedisConfig.class);
                         switch (redisConfig.getType()) {
                             case "add":
-                                System.out.println("added, url:" + redisConfig.getUrl());
+                                String url = redisConfig.getUrl();
+                                System.out.println("added, url:" + url);
                                 break;
                             case "update":
                                 System.out.println("update, url:" + redisConfig.getUrl());
